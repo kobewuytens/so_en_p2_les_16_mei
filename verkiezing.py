@@ -1,6 +1,21 @@
-class Kandidaat:
+from abc import ABC, abstractmethod
+import random
+
+# Abstracte basisklasse
+class Persoon(ABC):
     def __init__(self, naam):
         self._naam = naam
+
+    def get_naam(self):
+        return self._naam
+
+    def __str__(self):
+        return self._naam
+
+# Kandidaatklasse
+class Kandidaat(Persoon):
+    def __init__(self, naam):
+        super().__init__(naam)
         self._stemmen = []
 
     def geef_stem(self, stem):
@@ -9,59 +24,59 @@ class Kandidaat:
     def aantal_stemmen(self):
         return len(self._stemmen)
 
-    def get_naam(self):
-        return self._naam
-
     def __str__(self):
         return f"{self._naam} ({self.aantal_stemmen()} stemmen)"
 
+# Subklasse voor rectorverkiezing
+class RectorKandidaat(Kandidaat):
+    def __init__(self, naam):
+        super().__init__(naam)
 
+    # Extra logica zou hier kunnen komen als het nodig is
+    # bv. een beleidsvisie of ervaring
+
+# Stemklasse
 class Stem:
     def __init__(self, kandidaat):
         self._kandidaat = kandidaat
 
     def __str__(self):
-        return f"Stem op {self._kandidaat.get_naam()}"
+        return f"Stem op {self._kandidaat}"
 
-
-class Kiezer:
-    def __init__(self, naam):
-        self._naam = naam
-
+# Kiezerklasse
+class Kiezer(Persoon):
     def stem(self, kandidaat):
         stem = Stem(kandidaat)
         kandidaat.geef_stem(stem)
-        print(f"{self._naam} heeft gestemd op {kandidaat.get_naam()}")
+        print(f"{self._naam} heeft gestemd op {kandidaat}")
 
+# ----------------------
+# Simulatie van verkiezing
+# ----------------------
 
-# ----------------------------
-# Kandidaten aanmaken
-# ----------------------------
+# Lijst van kandidaten
 kandidaten = [
-    Kandidaat("Severine Vermeire"),
-    Kandidaat("Peter Lievens"),
-    Kandidaat("Tine Baelmans")
+    RectorKandidaat("Tine Baelmans"),
+    RectorKandidaat("Peter Lievens"),
+    RectorKandidaat("Severine Vermeire")
 ]
 
-# ----------------------------
-# Kiezers aanmaken
-# ----------------------------
+# Lijst van kiezers
 kiezers = [
-    Kiezer("Dirk"),
-    Kiezer("Jan"),
-    Kiezer("Maria")
+    Kiezer("Maarten"),
+    Kiezer("Lotte"),
+    Kiezer("Sophie"),
+    Kiezer("Wouter"),
+    Kiezer("Tom"),
+    Kiezer("Julie")
 ]
 
-# ----------------------------
-# Stemmen laten uitbrengen
-# ----------------------------
-kiezers[0].stem(kandidaten[0])  # Kobe stemt op Jan
-kiezers[1].stem(kandidaten[1])  # Tina stemt op Fatima
-kiezers[2].stem(kandidaten[0])  # Ahmed stemt op Jan
+# Laat elke kiezer stemmen op een willekeurige kandidaat
+for kiezer in kiezers:
+    keuze = random.choice(kandidaten)
+    kiezer.stem(keuze)
 
-# ----------------------------
 # Resultaten tonen
-# ----------------------------
-print("\nStemresultaten:")
+print("\n--- Verkiezingsresultaten rector ---")
 for kandidaat in kandidaten:
     print(kandidaat)
